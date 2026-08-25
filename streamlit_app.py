@@ -17,7 +17,6 @@ Run locally:
 
 Deploy on Hugging Face Spaces:
     Space SDK = "streamlit", app file = "streamlit_app.py"
-    (see STREAMLIT_DEPLOY.md for the full walkthrough)
 """
 
 import os
@@ -74,8 +73,7 @@ if "staff_name" not in st.session_state:
 
 
 # ---------------------------------------------------------------------------
-# Shared pipeline helpers (mirrors backend/main.py logic 1:1, called directly
-# instead of over HTTP)
+# Shared pipeline helpers
 # ---------------------------------------------------------------------------
 def _file_hash(path):
     h = hashlib.sha256()
@@ -401,20 +399,19 @@ elif page == "✅ Verify":
 
         left, right = st.columns([1, 1])
         with left:
-                    st.subheader("Scanned form")
-                    img_path = doc.get("processed_file_path")
-                    if img_path and os.path.exists(img_path):
-                        img = cv2.imread(img_path)
-                        if img is None:
-                            st.warning("Processed image file exists but could not be read (it may be corrupted). Try re-uploading this document.")
-                        else:
-                    # Safe across Streamlit versions:
-                            try:
-                                st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_column_width=True)
-                            except TypeError:
-                                st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-                    else:
-                        st.warning("Processed image not found on disk.")
+            st.subheader("Scanned form")
+            img_path = doc.get("processed_file_path")
+            if img_path and os.path.exists(img_path):
+                img = cv2.imread(img_path)
+                if img is None:
+                    st.warning("Processed image file exists but could not be read (it may be corrupted). Try re-uploading this document.")
+                else:
+                    try:
+                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
+                    except TypeError:
+                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            else:
+                st.warning("Processed image not found on disk.")
 
         with right:
             st.subheader("Fields")
