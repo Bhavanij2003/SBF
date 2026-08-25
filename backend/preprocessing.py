@@ -190,31 +190,18 @@ def align_to_reference(image, reference_path):
     aligned = cv2.warpPerspective(image, H, (w, h), borderValue=(255, 255, 255))
     return aligned
 
+# ---------------------------------------------------------------------------
+# Inside backend/preprocessing.py
+# ---------------------------------------------------------------------------
 def preprocess_pipeline_verbose(input_path, reference_template_path=None, save_path=None):
     warnings = {"perspective_cropped": False, "aligned_to_reference": False}
 
+    # Load original image directly without perspective warping
     image = load_image(input_path)
     image = auto_rotate(image)
-
-    # 1. Warp angled scan into a planar view
-    before_shape = image.shape
-    image = perspective_correct(image)
-    warnings["perspective_cropped"] = (image.shape != before_shape)
-
-    # 2. Deskew rotational drift
-    image = deskew(image)
-
-    # 3. Align against template PRIOR to resizing to standard dimensions
-    if reference_template_path:
-        before = image.copy()
-        image = align_to_reference(image, reference_template_path)
-        warnings["aligned_to_reference"] = not np.array_equal(image, before)
-
-    # 4. Enhance contrast and clean noise
+    
+    # Simple brightness and contrast cleanup only
     image = correct_brightness_contrast(image)
-    image = denoise(image)
-
-    # 5. Final resize for coordinate extraction mapping
     image = resize_to_standard(image)
 
     if save_path:
