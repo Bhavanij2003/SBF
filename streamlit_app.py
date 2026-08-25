@@ -398,20 +398,29 @@ elif page == "✅ Verify":
         st.session_state.verify_form_type = doc["form_type"]
 
         left, right = st.columns([1, 1])
+        # ---------------------------------------------------------------------------
+# Inside streamlit_app.py under page == "✅ Verify"
+# ---------------------------------------------------------------------------
         with left:
             st.subheader("Scanned form")
-            img_path = doc.get("processed_file_path")
+            
+            # CHANGE THIS LINE:
+            # img_path = doc.get("processed_file_path")
+            
+            # TO THIS:
+            img_path = doc.get("original_file_path")
+            
             if img_path and os.path.exists(img_path):
                 img = cv2.imread(img_path)
                 if img is None:
-                    st.warning("Processed image file exists but could not be read (it may be corrupted). Try re-uploading this document.")
+                    st.warning("Original image file exists but could not be read.")
                 else:
                     try:
                         st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
                     except TypeError:
                         st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             else:
-                st.warning("Processed image not found on disk.")
+                st.warning("Original image not found on disk.")
 
         with right:
             st.subheader("Fields")
