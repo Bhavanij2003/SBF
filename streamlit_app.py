@@ -406,7 +406,10 @@ elif page == "✅ Verify":
             img_path = doc.get("processed_file_path")
             if img_path and os.path.exists(img_path):
                 img = cv2.imread(img_path)
-                st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
+                if img is None:
+                    st.warning("Processed image file exists but could not be read (it may be corrupted). Try re-uploading this document.")
+                else:
+                    st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
             else:
                 st.warning("Processed image not found on disk.")
 
