@@ -409,7 +409,7 @@ elif page == "✅ Verify":
                 if img is None:
                     st.warning("Processed image file exists but could not be read (it may be corrupted). Try re-uploading this document.")
                 else:
-                    st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
+                    st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_column_width=True)
             else:
                 st.warning("Processed image not found on disk.")
 
